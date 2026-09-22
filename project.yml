@@ -8,16 +8,22 @@ targets:
     type: application
     platform: iOS
     deploymentTarget: "18.0"
+
     sources:
       - path: SwiftApp
 
     settings:
       PRODUCT_NAME: SwiftApp
+      EXECUTABLE_NAME: SwiftApp
       PRODUCT_BUNDLE_IDENTIFIER: com.taylen.SwiftApp
 
       GENERATE_INFOPLIST_FILE: YES
+
       INFOPLIST_KEY_CFBundleDisplayName: SwiftApp
+      INFOPLIST_KEY_CFBundleName: SwiftApp
       INFOPLIST_KEY_CFBundleExecutable: SwiftApp
+      INFOPLIST_KEY_CFBundlePackageType: APPL
+
       INFOPLIST_KEY_UILaunchScreen_Generation: YES
 
       CODE_SIGNING_ALLOWED: NO
