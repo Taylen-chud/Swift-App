@@ -8,6 +8,9 @@ targets:
     deploymentTarget: "18.0"
     sources: [SwiftApp]
     settings:
+      GENERATE_INFOPLIST_FILE: YES
+      INFOPLIST_KEY_CFBundleDisplayName: SwiftApp
+      INFOPLIST_KEY_UILaunchScreen_Generation: YES
       CODE_SIGNING_ALLOWED: NO
       CODE_SIGNING_REQUIRED: NO
       CODE_SIGN_IDENTITY: ""
