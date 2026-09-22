@@ -50,16 +50,100 @@ jobs:
             CODE_SIGN_ENTITLEMENTS="" \
             build
 
-      - name: Package unsigned IPA
-        run: |
+       - name: Verify and Package unsigned IPA
+         run: |
           set -euo pipefail
+
           APP="build/dd/Build/Products/Release-iphoneos/SwiftApp.app"
+
+          echo "========================================"
+          echo "Checking generated app"
+          echo "========================================"
+
+          if [ ! -d "$APP" ]; then
+            echo "ERROR: App bundle does not exist:"
+            echo "$APP"
+            exit 1
+          fi
+
+          echo ""
+          echo "App contents:"
+          find "$APP" -maxdepth 2 -print
+
+          echo ""
+          echo "========================================"
+          echo "Info.plist"
+          echo "========================================"
+
+          /usr/libexec/PlistBuddy -c "Print" "$APP/Info.plist"
+
+          echo ""
+          echo "========================================"
+          echo "Bundle information"
+          echo "========================================"
+
+          BUNDLE_ID=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "$APP/Info.plist")
+          EXECUTABLE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleExecutable" "$APP/Info.plist")
+          DISPLAY_NAME=$(/usr/libexec/PlistBuddy -c "Print :CFBundleDisplayName" "$APP/Info.plist")
+
+          echo "Bundle ID:       $BUNDLE_ID"
+          echo "Executable:      $EXECUTABLE"
+          echo "Display Name:    $DISPLAY_NAME"
+
+          echo ""
+          echo "========================================"
+          echo "Checking executable"
+          echo "========================================"
+
+          if [ -z "$EXECUTABLE" ]; then
+            echo "ERROR: CFBundleExecutable is empty."
+            exit 1
+          fi
+
+          if [ ! -f "$APP/$EXECUTABLE" ]; then
+            echo "ERROR: CFBundleExecutable points to a file that does not exist:"
+            echo "$APP/$EXECUTABLE"
+            exit 1
+          fi
+
+          echo "Executable exists:"
+          echo "$APP/$EXECUTABLE"
+
+          echo ""
+          echo "Executable type:"
+          file "$APP/$EXECUTABLE"
+
+          echo ""
+          echo "========================================"
+          echo "Checking Mach-O architecture"
+          echo "========================================"
+
+          lipo -info "$APP/$EXECUTABLE"
+
+          echo ""
+          echo "========================================"
+          echo "Creating IPA"
+          echo "========================================"
+
           rm -rf build/Payload SwiftApp.ipa
           mkdir -p build/Payload
+
           cp -R "$APP" build/Payload/
+
           find build/Payload -name '.DS_Store' -delete
-          (cd build && zip -qr ../SwiftApp.ipa Payload)
+
+          (
+            cd build
+            zip -qr ../SwiftApp.ipa Payload
+          )
+
+          echo ""
+          echo "IPA created:"
           ls -lh SwiftApp.ipa
+
+          echo ""
+          echo "IPA contents:"
+          unzip -l SwiftApp.ipa
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
