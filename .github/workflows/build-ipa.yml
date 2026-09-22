@@ -1,4 +1,4 @@
-name: Build unsigned IPA
+name: Build IPA
 
 on:
   push:
@@ -64,7 +64,7 @@ jobs:
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SwiftApp-unsigned
+          name: SwiftApp
           path: SwiftApp.ipa
           if-no-files-found: error
 
