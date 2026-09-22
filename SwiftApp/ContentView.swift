@@ -20,7 +20,7 @@ struct ContentView: View {
                 Button("Add") {
                     addTask()
                 }
-                .buttonStyle(.borderProminent)
+                .buttonStyle(.borderedProminent)
                 .disabled(newTaskTitle.isEmpty)
             }
 
@@ -34,7 +34,7 @@ struct ContentView: View {
                         Image(systemName: task.isCompleted ? "checkmark.seal.fill" : "circle") 
                             .foregroundColor(task.isCompleted ? .green : .gray)
                     }
-                    .contentShape(Rectangle()) // Makes the whole row tappable
+                    .contentShape(Rectangle())
                     .onTapGesture {
                         toggleTask(task)
                     }
@@ -62,7 +62,7 @@ struct ContentView: View {
     }
 }
 
-#preview {
+#Preview {
     ContentView()
         .modelContainer(for: Task.self, inMemory: true)
 }
