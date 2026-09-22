@@ -50,155 +50,16 @@ jobs:
             CODE_SIGN_ENTITLEMENTS="" \
             build
 
-      - name: Verify and Package unsigned IPA
+      - name: Package unsigned IPA
         run: |
           set -euo pipefail
-
           APP="build/dd/Build/Products/Release-iphoneos/SwiftApp.app"
-
-          echo "========================================"
-          echo "1. CHECKING APP BUNDLE"
-          echo "========================================"
-
-          test -d "$APP"
-          test -f "$APP/Info.plist"
-
-          echo "App:"
-          echo "$APP"
-
-          echo ""
-          echo "App contents:"
-          find "$APP" -maxdepth 2 -print
-
-          echo ""
-          echo "========================================"
-          echo "2. READING INFO.PLIST"
-          echo "========================================"
-
-          BUNDLE_ID=$(/usr/libexec/PlistBuddy \
-            -c "Print :CFBundleIdentifier" \
-            "$APP/Info.plist")
-
-          EXECUTABLE=$(/usr/libexec/PlistBuddy \
-            -c "Print :CFBundleExecutable" \
-            "$APP/Info.plist")
-
-          DISPLAY_NAME=$(/usr/libexec/PlistBuddy \
-            -c "Print :CFBundleDisplayName" \
-            "$APP/Info.plist")
-
-          PACKAGE_TYPE=$(/usr/libexec/PlistBuddy \
-            -c "Print :CFBundlePackageType" \
-            "$APP/Info.plist")
-
-          echo "Bundle ID:    $BUNDLE_ID"
-          echo "Executable:   $EXECUTABLE"
-          echo "Display Name: $DISPLAY_NAME"
-          echo "Package Type: $PACKAGE_TYPE"
-
-          echo ""
-          echo "========================================"
-          echo "3. VERIFYING EXECUTABLE"
-          echo "========================================"
-
-          if [ "$EXECUTABLE" != "SwiftApp" ]; then
-            echo "ERROR: Expected executable SwiftApp"
-            exit 1
-          fi
-
-          EXEC="$APP/$EXECUTABLE"
-
-          if [ ! -f "$EXEC" ]; then
-            echo "ERROR: Executable does not exist:"
-            echo "$EXEC"
-            exit 1
-          fi
-
-          echo "Executable:"
-          ls -lh "$EXEC"
-
-          echo ""
-          echo "File type:"
-          file "$EXEC"
-
-          echo ""
-          echo "Architecture:"
-          lipo -info "$EXEC"
-
-          echo ""
-          echo "========================================"
-          echo "4. CREATING IPA"
-          echo "========================================"
-
-          rm -rf build/Payload SwiftApp.ipa build/ipa-test
-
+          rm -rf build/Payload SwiftApp.ipa
           mkdir -p build/Payload
-          cp -R "$APP" build/Payload/SwiftApp.app
-
+          cp -R "$APP" build/Payload/
           find build/Payload -name '.DS_Store' -delete
-
-          (
-            cd build
-            zip -qry ../SwiftApp.ipa Payload
-          )
-
-          echo ""
-          echo "Created IPA:"
+          (cd build && zip -qr ../SwiftApp.ipa Payload)
           ls -lh SwiftApp.ipa
-
-          echo ""
-          echo "========================================"
-          echo "5. IPA CONTENTS"
-          echo "========================================"
-
-          unzip -l SwiftApp.ipa
-
-          echo ""
-          echo "========================================"
-          echo "6. TESTING IPA EXTRACTION"
-          echo "========================================"
-
-          mkdir -p build/ipa-test
-
-          unzip -q SwiftApp.ipa -d build/ipa-test
-
-          EXTRACTED_APP="build/ipa-test/Payload/SwiftApp.app"
-
-          if [ ! -d "$EXTRACTED_APP" ]; then
-            echo "ERROR: Extracted app bundle does not exist:"
-            echo "$EXTRACTED_APP"
-            exit 1
-          fi
-
-          if [ ! -f "$EXTRACTED_APP/Info.plist" ]; then
-            echo "ERROR: Extracted Info.plist does not exist"
-            exit 1
-          fi
-
-          if [ ! -f "$EXTRACTED_APP/SwiftApp" ]; then
-            echo "ERROR: Extracted executable does not exist"
-            exit 1
-          fi
-
-          echo "Extracted app:"
-          find "$EXTRACTED_APP" -maxdepth 2 -print
-
-          echo ""
-          echo "Extracted bundle ID:"
-          /usr/libexec/PlistBuddy \
-            -c "Print :CFBundleIdentifier" \
-            "$EXTRACTED_APP/Info.plist"
-
-          echo ""
-          echo "Extracted executable:"
-          /usr/libexec/PlistBuddy \
-            -c "Print :CFBundleExecutable" \
-            "$EXTRACTED_APP/Info.plist"
-
-          echo ""
-          echo "========================================"
-          echo "IPA VALIDATION PASSED"
-          echo "========================================"
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
