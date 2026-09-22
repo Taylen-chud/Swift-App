@@ -1,0 +1,13 @@
+name: SwiftApp
+options:
+  bundleIdPrefix: com.taylen
+targets:
+  SwiftApp:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources: [SwiftApp]
+    settings:
+      CODE_SIGNING_ALLOWED: NO
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGN_IDENTITY: ""
