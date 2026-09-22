@@ -13,26 +13,11 @@ targets:
       - path: SwiftApp
 
     settings:
-<<<<<<< HEAD
-=======
       INFOPLIST_FILE: SwiftApp/Info.plist
->>>>>>> 12183ac (fix)
       PRODUCT_NAME: SwiftApp
       EXECUTABLE_NAME: SwiftApp
       PRODUCT_BUNDLE_IDENTIFIER: com.taylen.SwiftApp
 
-<<<<<<< HEAD
-      GENERATE_INFOPLIST_FILE: YES
-
-      INFOPLIST_KEY_CFBundleDisplayName: SwiftApp
-      INFOPLIST_KEY_CFBundleName: SwiftApp
-      INFOPLIST_KEY_CFBundleExecutable: SwiftApp
-      INFOPLIST_KEY_CFBundlePackageType: APPL
-
-      INFOPLIST_KEY_UILaunchScreen_Generation: YES
-
-=======
->>>>>>> 12183ac (fix)
       CODE_SIGNING_ALLOWED: NO
       CODE_SIGNING_REQUIRED: NO
       CODE_SIGN_IDENTITY: ""
