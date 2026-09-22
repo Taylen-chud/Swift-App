@@ -50,8 +50,8 @@ jobs:
             CODE_SIGN_ENTITLEMENTS="" \
             build
 
-       - name: Verify and Package unsigned IPA
-         run: |
+      - name: Verify and Package unsigned IPA
+        run: |
           set -euo pipefail
 
           APP="build/dd/Build/Products/Release-iphoneos/SwiftApp.app"
